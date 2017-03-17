@@ -3,16 +3,16 @@ const fs = require('fs');
 const port = 3000;
 
 // static Content
-const header = '<!DOCTYPE html>' +
-    '<html>' +
-    '<head>' +
-    '<meta charset="utf-8">' +
-    '<title>simpleHTTP server</title>' +
-    '</head>' +
-    '<body>';
+const header = ['<!DOCTYPE html>',
+    '<html>',
+    '<head>',
+    '<meta charset="utf-8">',
+    '<title>simpleHTTP server</title>',
+    '</head>',
+    '<body>'].join('');
 
-const footer = '</body>' +
-    '</html>';
+const footer = ['</body>',
+    '</html>'].join('');
 
 /////////////////////////////
 
