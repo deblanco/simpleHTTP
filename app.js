@@ -1,18 +1,22 @@
-const http = require('http');
-const fs = require('fs');
-const port = 3000;
+const http = require('http'),
+    fs = require('fs'),
+    port = 3000;
 
 // static Content
-const header = ['<!DOCTYPE html>',
+const header = [
+    '<!DOCTYPE html>',
     '<html>',
     '<head>',
     '<meta charset="utf-8">',
     '<title>simpleHTTP server</title>',
     '</head>',
-    '<body>'].join('');
+    '<body>'
+].join('');
 
-const footer = ['</body>',
-    '</html>'].join('');
+const footer = [
+    '</body>',
+    '</html>'
+].join('');
 
 /////////////////////////////
 
@@ -33,7 +37,7 @@ const sendFooter = (response) => {
 // list a folder and prints him as table
 const listFolder = (path) => {
     return fs.readdirSync(path, 'utf8').map((f) => {
-        return `<a href="${f}">${f}</a>`
+        return `<a href="${path}/${f}">${f}</a>`
     }).join('<br />');
 };
 
@@ -62,7 +66,8 @@ const requestHandler = (request, response) => {
 
     if (request.url === '/') {
         sendHeader(response);
-        response.write('<h1>Welcome!</h1>');
+        response.write('<h1>Index of ' + request.url + '</h1>');
+        response.write(listFolder('.'));
         sendFooter(response);
     } else {
         // remove first character('/') from request and translate/decode the URI 
