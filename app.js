@@ -78,7 +78,7 @@ const requestHandler = (request, response) => {
                 response.write('<h1>Not Found</h1>');
                 response.write('<p>The requested URL ' + request.url + ' was not found on this server.</p>');
                 response.write('<hr>');
-                response.write('<p><i>simpleHTTP Server. Made with <3 and NodeJS by <a href="http://github.com/deblanco/">Daniel Blanco Parla</a></i>.</p>');
+                response.write('<p><i>simpleHTTP Server</i></p>');
                 sendFooter(response);
                 return;
             }
@@ -86,10 +86,17 @@ const requestHandler = (request, response) => {
             if (stats.isFile()) {
                 sendFile(requestedUrlParsed, response);
             } else {
-                sendHeader(response);
-                response.write('<h1>Index of ' + request.url + '</h1>');
-                response.write(listFolder(requestedUrlParsed));
-                sendFooter(response);
+                fs.stat(requestedUrlParsed + '/index.html', (err, stats) => {
+                    if (err) {
+                        // index.html doesn't exists
+                        sendHeader(response);
+                        response.write('<h1>Index of ' + request.url + '</h1>');
+                        response.write(listFolder(requestedUrlParsed));
+                        sendFooter(response);
+                    } else {
+                        sendFile(requestedUrlParsed + '/index.html', response);
+                    }
+                });
             }
         });
     }
