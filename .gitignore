@@ -58,3 +58,5 @@ jspm_packages
 pruebas/
 
 .DS_Store
+
+.history/

@@ -1,6 +1,20 @@
 const http = require('http'),
     fs = require('fs'),
-    port = 3000;
+    args = process.argv.splice(2);
+
+let port = 3000;
+let rootPath = '/';
+
+// checks if there is a port specified by args and root folder
+args.forEach((arg, index) => {
+    if (index === 0) {
+        Number.isInteger(arg) && arg < 65535 ? port = arg : 3000;
+    } else if (index === 1) {
+        fs.stat(arg, (err, stat) => { // path or file exists??????
+            if (!err) rootPath === arg;
+        });
+    }
+});
 
 // static Content
 const header = [
@@ -14,6 +28,8 @@ const header = [
 ].join('');
 
 const footer = [
+    '<hr>',
+    '<p><i>simpleHTTP Server</i></p>',
     '</body>',
     '</html>'
 ].join('');
@@ -34,11 +50,11 @@ const sendFooter = (response) => {
     response.end();
 }
 
-// list a folder and prints him as table
+const dotsLinks = _ => '<a href=".." title="Parent directory">..</a><br />';
+
+// list a folder and prints it as table
 const listFolder = (path) => {
-    return fs.readdirSync(path, 'utf8').map((f) => {
-        return `<a href="${path}/${f}">${f}</a>`
-    }).join('<br />');
+    return fs.readdirSync(path, 'utf8').map((f) => `<a href="${path}/${f}">${f}</a>`).join('<br />');
 };
 
 // send the file
@@ -57,6 +73,11 @@ const sendFile = (filePath, response) => {
         response.write(file, "binary");
         response.end();
     });
+};
+
+// if second arg is added it will set a root folder
+const processPath = (response) => {
+
 };
 
 /////////////////////////////
@@ -91,6 +112,7 @@ const requestHandler = (request, response) => {
                         // index.html doesn't exists
                         sendHeader(response);
                         response.write('<h1>Index of ' + request.url + '</h1>');
+                        response.write(dotsLinks());
                         response.write(listFolder(requestedUrlParsed));
                         sendFooter(response);
                     } else {
@@ -105,6 +127,6 @@ const requestHandler = (request, response) => {
 
 const server = http.createServer(requestHandler);
 server.listen(port, (err) => {
-    if (err) return console.log('something bad happened', err);
+    if (err) return console.log('Something bad happened', err);
     console.log('server is listening on ' + port)
 });
